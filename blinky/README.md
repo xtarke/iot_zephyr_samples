@@ -53,18 +53,18 @@ error: '__device_dts_ord_DT_N_ALIAS_led_P_gpios_IDX_0_PH_ORD' undeclared here (n
 To add support for your board, add something like this to your devicetree:
 
 ```dts
-   / {
-   	aliases {
-   		led0 = &myled0;
-   	};
-
-   	leds {
-   		compatible = "gpio-leds";
-   		myled0: led_0 {
-   			gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
-         };
-   	};
+/{
+   aliases {
+      led0 = &myled0;
    };
+
+   leds {
+      compatible = "gpio-leds";
+      myled0: led_0 {
+         gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+      };
+   };
+};
 ```
 
 The above sets your board's ``led0`` alias to use pin 13 on GPIO controller
