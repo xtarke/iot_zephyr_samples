@@ -48,7 +48,6 @@ error: '__device_dts_ord_DT_N_ALIAS_led_P_gpios_IDX_0_PH_ORD' undeclared here (n
 ```
 
 ## Adding board support
-********************
 
 To add support for your board, add something like this to your devicetree:
 
