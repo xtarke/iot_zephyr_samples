@@ -1,6 +1,6 @@
 / {
     aliases {
-        led0 = &my_custom_led;
+        led0 = &led0;
     };
 
     leds {

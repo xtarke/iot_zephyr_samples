@@ -32,6 +32,8 @@ To flash using BlackMagicProbe:
 west flash --runner blackmagicprobe --gdb-serial /dev/ttyACM0
 ```
 
+Tip: the first flash command probably will fail. See this BlackMagick Probe [bug report](https://github.com/blackmagic-debug/blackmagic/issues/1985).
+
 After flashing, the LED starts to blink and messages with the current LED state are printed on the console. If a runtime error occurs, the sample exits without printing to the console.
 
 ## Build errors

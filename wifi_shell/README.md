@@ -9,7 +9,7 @@ to verify net_if settings.
 
 Verify the board and chip you are targeting provide Wi-Fi support.
 
-For instance you can use RP-Pico 2 by selecting the rpi_pico/rp2040/w board.
+For instance you can use RP-Pico W by selecting the rpi_pico/rp2040/w board.
 
 ```bash
 # Prestine build with Pico W board 
@@ -22,6 +22,8 @@ To flash using BlackMagicProbe:
 # Flashing the device using BMP debugger 
 west flash --runner blackmagicprobe --gdb-serial /dev/ttyACM0
 ```
+
+Tip: the first flash command probably will fail. See this BlackMagick Probe [bug report](https://github.com/blackmagic-debug/blackmagic/issues/1985).
 
 ## Sample console interaction
 
