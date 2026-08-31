@@ -14,7 +14,7 @@ This repository contains a collection of IoT examples and utilities built with [
 
 ---
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 Before building these examples, ensure you have the standard (tested with v4.4.0) Zephyr development environment set up:
 
@@ -26,7 +26,7 @@ Before building these examples, ensure you have the standard (tested with v4.4.0
 
 ---
 
-## 🚀 Building and Flashing
+## Building and Flashing
 
 To build any of the samples in this repository, navigate to the specific sample's directory or specify it in your `west build` command. 
 
