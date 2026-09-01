@@ -1,0 +1,100 @@
+FROM ubuntu:24.04
+
+ARG NAME=dev-toolbox
+ARG VERSION=24.04
+LABEL com.github.containers.toolbox="true" \
+      name="$NAME" \
+      version="$VERSION" \
+      usage="This image is meant to be used with the toolbox(1) command" \
+      summary="Image for creating Ubuntu Toolbox containers"
+      
+# Evita que o apt-get solicite interações (como fuso horário) durante o build
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN userdel -r ubuntu || true
+
+# RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository universe && \
+    apt-get update
+
+COPY extra-packages /
+# Instala o wget (necessário para o VS Code) e os pacotes extras do arquivo
+RUN apt-get install -y wget && \
+    apt-get install -y $(cat /extra-packages) && \
+    rm /extra-packages
+
+# Baixa a versão .deb do VS Code em vez da versão .rpm
+RUN wget https://update.code.visualstudio.com/latest/linux-deb-x64/stable -O /code-latest-x64.deb && \
+    apt-get install -y /code-latest-x64.deb && \
+    rm /code-latest-x64.deb
+
+RUN mkdir -p /usr/share/code/data && \
+    chmod 777 /usr/share/code/data
+
+
+WORKDIR /workdir
+RUN python3 -m venv .venv
+# RUN source .venv/bin/activate
+ENV PATH="/workdir/.venv/bin:$PATH"
+RUN pip3 install west
+
+# Download and install Zephyr SDK 1.0 (Required for Zephyr 4.4.0)
+RUN wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v1.0.1/zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
+    && tar xvf zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
+    && rm zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
+    && cd zephyr-sdk-1.0.1 \
+    && ./setup.sh -t arm-zephyr-eabi -h -c 
+    #&& ./setup.sh -t all -h -c
+
+# Initialize the West workspace specifically tracking the v4.4.0 release
+RUN west init -m https://github.com/zephyrproject-rtos/zephyr --mr v4.4.0 . \
+    && west update \
+    && west zephyr-export
+
+# Install additional Python requirements mandated by the Zephyr 4.4.0 stack
+RUN pip3 install -r zephyr/scripts/requirements.txt
+
+# Set environment variables so CMake automatically locates the SDK
+ENV ZEPHYR_SDK_INSTALL_DIR=/workdir/zephyr-sdk-1.0.1
+
+
+
+
+
+
+
+
+
+# ENV PLATFORMIO_CORE_DIR="/usr/share/platformio"
+# RUN mkdir /usr/share/platformio
+# RUN chmod 777 /usr/share/platformio
+
+# Limpa o cache do apt para reduzir o tamanho da imagem
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i -e 's/ ALL$/ NOPASSWD:ALL/' /etc/sudoers
+
+RUN ln -s /run/host/var/edata/aluno /data
+# RUN ln -s /run/host/var/data/aluno/emb22109 /emb22109
+# RUN ln -s /run/host/var/data/aluno/prg22107 /prg22107
+# RUN ln -s /run/host/var/data/aluno/prg203405 /prg203405
+
+RUN mkdir -p /install
+COPY ./code-templates.tgz /install/
+COPY ./setup_extensions.sh /usr/local/bin/
+
+# RUN curl https://discovirtual.ifsc.edu.br/index.php/s/z8EgoqK9VSQ1PIF/download --output /create_install.tgz
+# RUN tar -C /opt -zxvf /create_install.tgz
+# RUN ln -s /opt/itemis_CREATE/itemisCREATE /usr/local/bin/itemisCREATE
+# RUN rm /create_install.tgz
+
+COPY ./rootfs_update.sh /usr/local/bin/
+COPY ./repo_view.sh /usr/local/bin/
+COPY ./install_sshkey.sh /usr/local/bin/
+
+
+
+# Default command opens a bash terminal
+# CMD ["/bin/bash"]
