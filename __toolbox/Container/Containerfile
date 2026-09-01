@@ -62,12 +62,11 @@ RUN pip install -r zephyr/scripts/requirements.txt
 # Set environment variables so CMake automatically locates the SDK
 ENV ZEPHYR_SDK_INSTALL_DIR=/zephyr/zephyr-sdk-1.0.1
 
+RUN echo "source /zephyr/zephyr/zephyr-env.sh" >> /etc/bash.bashrc
 
-
-
-#RUN mkdir /install
-#COPY ./code-templates.tgz /install/
-#COPY ./setup_extensions.sh /usr/local/bin/
+RUN mkdir /install
+COPY ./code-templates.tgz /install/
+COPY ./setup_extensions.sh /usr/local/bin/
 
 # RUN curl https://discovirtual.ifsc.edu.br/index.php/s/z8EgoqK9VSQ1PIF/download --output /create_install.tgz
 # RUN tar -C /opt -zxvf /create_install.tgz
