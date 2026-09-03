@@ -21,27 +21,26 @@ done
 echo "Starting ..."
 
 
-# if [[ -d "$NAME" ]]; then
-#     echo "$NAME exists. Aborting."
-# else
-#     echo "Creating $NAME."
-#     mkdir $NAME
-# fi
-
+if [[ -d "$NAME" ]]; then
+    echo "$NAME exists. Aborting."
+else
+    echo "Creating $NAME."
+    mkdir $NAME
+fi
 
 cd $NAME
-# python3 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 # # ENV PATH="/workdir/.venv/bin:$PATH"
-# pip install west
+pip install west
 
-# # Download and install Zephyr SDK 1.0 (Required for Zephyr 4.4.0)
-# wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v1.0.1/zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
-#     && tar xf zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz --checkpoint=.100 \
-#     && rm zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
-#     && cd zephyr-sdk-1.0.1 \
-#     && ./setup.sh -t all -h -c
-#     #&& ./setup.sh -t arm-zephyr-eabi -h -c
+# Download and install Zephyr SDK 1.0 (Required for Zephyr 4.4.0)
+wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v1.0.1/zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
+     && tar xf zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz --checkpoint=.100 \
+     && rm zephyr-sdk-1.0.1_linux-x86_64_gnu.tar.xz \
+     && cd zephyr-sdk-1.0.1 \
+      && ./setup.sh -t all -h -c
+     #&& ./setup.sh -t arm-zephyr-eabi -h -c
 
 cd $NAME
 
@@ -53,9 +52,11 @@ west init -m https://github.com/zephyrproject-rtos/zephyr --mr v4.4.0 . \
 # Install additional Python requirements mandated by the Zephyr 4.4.0 stack
 pip install -r zephyr/scripts/requirements.txt
 
-# Set environment variables so CMake automatically locates the SDK
-export ZEPHYR_SDK_INSTALL_DIR="$NAME/zephyr-sdk-1.0.1"
+# Add new profile to activate environment
+sudo touch /etc/profile.d/activate_venv.sh
 
-# Add source lines to activate env when entering toolbox
-## sudo echo "source /zephyr/zephyr/zephyr-env.sh" >> /etc/bashrc
-## sudo echo "source /zephyr/zephyr/zephyr-env.sh" >> /etc/zshrc
+LINE="source $NAME/.venv/bin/activate"
+grep -qF "$LINE" /etc/profile.d/activate_venv.sh || echo "$LINE" | sudo tee -a /etc/profile.d/activate_venv.sh > /dev/null
+
+LINE="source $NAME/zephyr/zephyr-env.sh"
+grep -qF "$LINE" /etc/profile.d/activate_venv.sh || echo "$LINE" | sudo tee -a /etc/profile.d/activate_venv.sh > /dev/null
