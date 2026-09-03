@@ -4,7 +4,7 @@ if [ -n "$1" ]; then
    echo "Setting name of toolbox to $1"
    NAME=$1
 else
-   NAME=dev
+   NAME=zephyr
    echo "Default name of toolbox is $NAME"
 fi
 
