@@ -60,3 +60,6 @@ grep -qF "$LINE" /etc/profile.d/activate_venv.sh || echo "$LINE" | sudo tee -a /
 
 LINE="source $NAME/zephyr/zephyr-env.sh"
 grep -qF "$LINE" /etc/profile.d/activate_venv.sh || echo "$LINE" | sudo tee -a /etc/profile.d/activate_venv.sh > /dev/null
+
+LINE="export  CMAKE_PREFIX_PATH=$NAME/zephyr-sdk-1.0.1/cmake"
+grep -qF "$LINE" /etc/profile.d/activate_venv.sh || echo "$LINE" | sudo tee -a /etc/profile.d/activate_venv.sh > /dev/null
