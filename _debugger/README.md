@@ -57,7 +57,7 @@ You can verify the board is in DFU mode by running `dfu-util -l`. You should see
 ### Flash the bootloader
 
 ```bash
-dfu-util -d 0483:df11 --alt 0 -s 0x08000000:leave -D build/blackmagic_blackpill_f401cc_bootloader.bin
+dfu-util -d 0483:df11 --alt 0 -s 0x08000000:leave -D binary/blackmagic_blackpill_f401cc_bootloader_v2.1.0.bin
 ```
 
 ### Flash the firmware:
@@ -65,13 +65,13 @@ dfu-util -d 0483:df11 --alt 0 -s 0x08000000:leave -D build/blackmagic_blackpill_
 From the root of the `blackmagic` directory, flash the newly compiled `blackmagic.bin` to the flash memory address `0x08000000`:
 
 ```bash
-./dfu-util -d 0483:df11 --alt 0 -s 0x08004000:leave -D build/blackmagic_blackpill_f401cc_firmware.bin
+./dfu-util -d 0483:df11 --alt 0 -s 0x08004000:leave -D binary/blackmagic_blackpill_f401cc_firmware_v2.1.0.bin
 ```
 
 ### Upgrade the firmware
 
 ```bash
-dfu-util -d 1d50:6018 -a 0 -s 0x08004000:leave -D build/blackmagic_blackpill_f401cc_firmware.bin
+dfu-util -d 1d50:6017 -a 0 -s 0x08004000:leave -D blackmagic_blackpill_f401cc_firmware_v2.1.0.bin
 ``` 
 
 ## 4. Usage
