@@ -1,5 +1,5 @@
 /**
- * @file main_2.c
+ * @file main.c
  * @brief Zephyr application demonstrating button input, events, and LED toggling.
  *
  * This file contains the main application logic for reading a button press
