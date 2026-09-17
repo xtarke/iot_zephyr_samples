@@ -14,9 +14,10 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 /**
  * @def PWM_CHANNEL
- * @brief The PWM channel number to use for the output.
+ * @brief The PWM channel number to use for the output. Check pwm_dev device to match channels.
  */
-#define PWM_CHANNEL   0
+#define PWM_CHANNEL_4   4
+#define PWM_CHANNEL_5   5
 
 /**
  * @def PWM_PERIOD_NS
@@ -30,7 +31,7 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
  * Obtains the PWM device, channel, and period specifications from the 
  * devicetree node labeled `pwm_led0`.
  */
-static const struct pwm_dt_spec pwm_channel = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_led0));
+static const struct pwm_dt_spec pwm_channel = PWM_DT_SPEC_GET(DT_NODELABEL(pwm_dev));
 
 /**
  * @brief Main application entry point.
@@ -51,7 +52,13 @@ int main(void)
 		return 0;
 	}
 
-	ret = pwm_set(pwm_channel.dev, PWM_CHANNEL, PWM_PERIOD_NS, PWM_PERIOD_NS / 2, PWM_POLARITY_NORMAL);
+	ret = pwm_set(pwm_channel.dev, PWM_CHANNEL_4, PWM_PERIOD_NS, PWM_PERIOD_NS / 2, PWM_POLARITY_NORMAL);
+	if (ret < 0) {
+		LOG_ERR("Failed to set pwm (%d)\n", ret);
+		return ret;
+	}
+
+	ret = pwm_set(pwm_channel.dev, PWM_CHANNEL_5, PWM_PERIOD_NS, PWM_PERIOD_NS / 2, PWM_POLARITY_INVERTED);
 	if (ret < 0) {
 		LOG_ERR("Failed to set pwm (%d)\n", ret);
 		return ret;

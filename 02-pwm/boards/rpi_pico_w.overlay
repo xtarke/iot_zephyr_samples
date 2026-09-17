@@ -24,4 +24,30 @@
 			zephyr,code = <INPUT_KEY_0>;
 		};
 	};
+
+    pwm_outputs {
+		compatible = "pwm-leds";
+
+        pwm_dev: pwm_dev {
+			pwms = <&pwm 4 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+            pwms = <&pwm 5 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+		};
+	};
+};
+
+/* All GPIO pins on the RP2040 (GP0 to GP29) have PWM output capability,
+ * controlled by 8 hardware slices (0 to 7), divided into A (even pins) and
+ * B (odd pins) outputs. */
+&pinctrl {
+	pwm_slice_2_default: pwm_slice_2_default {
+		group1 {
+			pinmux = <PWM_2A_P4>, <PWM_2B_P5>;
+		};
+	};
+};
+
+&pwm {
+	status = "okay";
+	pinctrl-0 = <&pwm_slice_2_default>;
+	pinctrl-names = "default";
 };
