@@ -1,0 +1,46 @@
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    aliases {
+        led0 = &my_custom_led;
+	ambient0 = &bme280;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        my_custom_led: led_2 {
+            /* Map to GP2 on the RP2040 (gpio0 is the main GPIO controller) */
+            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+            label = "Custom LED on GP2";
+        };
+    };
+
+    gpio_keys {
+		compatible = "gpio-keys";
+
+		user_btn: button_0 {
+			label = "SW_0";
+			gpios = <&gpio0 3 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			zephyr,code = <INPUT_KEY_0>;
+		};
+	};
+};
+
+
+/* Default I2c pin MUX:
+ * pinmux = <I2C0_SDA_P4>, <I2C0_SCL_P5>;
+ *
+ * See rpi_pico-pinctrl-common.dtsi
+*/
+
+&i2c0 {
+	status = "okay";
+
+	bme280: bme280@76 {
+		compatible = "bosch,bme280";
+		reg = <0x76>;
+		label = "BME280";
+	};
+
+};
