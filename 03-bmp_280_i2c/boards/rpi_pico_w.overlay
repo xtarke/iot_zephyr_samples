@@ -3,7 +3,7 @@
 / {
     aliases {
         led0 = &my_custom_led;
-	ambient0 = &bme280;
+		ambient0 = &bmp280;
     };
 
     leds {
@@ -37,10 +37,9 @@
 &i2c0 {
 	status = "okay";
 
-	bme280: bme280@76 {
+	bmp280: bmp280@76 {
 		compatible = "bosch,bme280";
 		reg = <0x76>;
-		label = "BME280";
+		label = "BMP280";
 	};
-
 };

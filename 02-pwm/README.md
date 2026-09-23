@@ -4,11 +4,11 @@ This is a Zephyr RTOS application that demonstrates the initializing of a PWM de
 
 ## Requirements
 
-The board hardware must have a device node capable of generating PWM. A devicetree ```pwm_dev``` must be defined in the board overlay.
+The board hardware must have a device node capable of generating PWM. A devicetree ```pwm_dev``` must be defined in the [board overlay](./boards/rpi_pico_w.overlay).
 
 ## Building and Running
 
-Build and flash Blinky as follows, changing ``rpi_pico`` for your board:
+Build and flash as follows, changing ``rpi_pico`` for your board:
 
 ```bash
 # Prestine build with Pico W board 
@@ -60,7 +60,7 @@ When capturing the signal using an oscilloscope or logic analyzer, it should loo
 
 ---
 
-## Regras de Hardware e Observações
+## Hardware rules
 
 
 1. **Channel index in devicetree**:
