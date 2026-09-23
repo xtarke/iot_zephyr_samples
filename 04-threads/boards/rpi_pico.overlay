@@ -1,0 +1,15 @@
+/ {
+    aliases {
+        led0 = &my_custom_led;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        my_custom_led: led_2 {
+            /* Map to GP2 on the RP2040 (gpio0 is the main GPIO controller) */
+            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+            label = "Custom LED on GP2";
+        };
+    };
+};
