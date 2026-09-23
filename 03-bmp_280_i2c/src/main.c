@@ -1,3 +1,12 @@
+/**
+ * @file main.c
+ * @brief Main application for reading BMP280 sensor data using Zephyr RTOS.
+ *
+ * This file contains the main application that initializes the BMP280 sensor 
+ * and continuously fetches ambient temperature and atmospheric pressure data 
+ * at a fixed interval.
+ */
+
 /* C includes */
 #include <stdio.h>
 
@@ -7,15 +16,33 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
 
+/** 
+ * @brief Register the logging module for the main application. 
+ */
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
+/**
+ * @brief Pointer to the BMP280 device structure.
+ * 
+ * This device instance is retrieved at build time using the Device Tree 
+ * node label 'bmp280'.
+ */
 static const struct device *const dev = DEVICE_DT_GET(DT_NODELABEL(bmp280));
 
+/**
+ * @brief Main application entry point.
+ *
+ * This function verifies if the BMP280 sensor is ready for operation. 
+ * Once verified, it enters an infinite loop where it periodically fetches 
+ * sensor samples (temperature and pressure) every 5 seconds and logs 
+ * them to the console.
+ *
+ * @return Returns standard error codes (e.g., -EIO) if device initialization fails.
+ */
 int main(void)
 {
 	int ret;
 	struct sensor_value temp, press;
-
 
 	if (!device_is_ready(dev)) {
 		LOG_ERR("Error: Device \"%s\" is not ready; "
