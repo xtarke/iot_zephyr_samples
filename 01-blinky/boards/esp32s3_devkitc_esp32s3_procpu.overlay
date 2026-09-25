@@ -1,0 +1,25 @@
+/ {
+	aliases {
+		led0 = &led_externo;
+	};
+
+	chosen {
+		/* Change logs to JTAG USB */
+        	zephyr,console = &usb_serial;
+        	zephyr,shell-uart = &usb_serial;
+    	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_externo: led_0 {
+			gpios = <&gpio0 38 GPIO_ACTIVE_HIGH>;
+			label = "LED Externo no GPIO2";
+		};
+	};
+};
+
+/* Activate JTAG USB */
+&usb_serial {
+    status = "okay";
+};

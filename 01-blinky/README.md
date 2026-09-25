@@ -36,6 +36,28 @@ Tip: the first flash command probably will fail. See this BlackMagick Probe [bug
 
 After flashing, the LED starts to blink and messages with the current LED state are printed on the console. If a runtime error occurs, the sample exits without printing to the console.
 
+
+For esp32s3-dev-kit:
+
+```bash
+west build -b esp32s3_devkitc/esp32s3/procpu -p
+```
+
+To flash using internal debug probe (USB-C):
+
+```bash
+west flash --esp-device /dev/ttyACM0
+```
+
+To open espressif monitor:
+
+```bash
+west espressif monitor -p /dev/ttyACM0
+```
+
+Tip: look into esp32s3 overlay and change "chosen node" if you want to use uart0 for log messages.
+
+
 ## Build errors
 
 
