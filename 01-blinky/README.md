@@ -96,7 +96,7 @@ the pin is set to its low state, and off when the pin is in its high state.
 
 Tips:
 
-- See :dtcompatible:`gpio-leds` for more information on defining GPIO-based LEDs   in devicetree.
+- See `gpio-leds` for more information on defining GPIO-based LEDs   in devicetree.
 
 - If you're not sure what to do, check the devicetrees for supported boards which   use the same SoC as your target.
 
