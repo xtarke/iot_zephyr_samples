@@ -6,10 +6,10 @@
     leds {
         compatible = "gpio-leds";
 
-        led0: led_0 {
-			gpios = <&cyw43_gpio 0 GPIO_ACTIVE_HIGH>;
-			label = "LED";
-		};
+        // led0: led_0 {
+		// 	gpios = <&cyw43_gpio 0 GPIO_ACTIVE_HIGH>;
+		// 	label = "LED";
+		// };
 
         my_custom_led: led_2 {
             /* Map to GP2 on the RP2040 (gpio0 is the main GPIO controller) */
