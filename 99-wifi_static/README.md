@@ -2,7 +2,7 @@
 
 This sample allows testing Wi-Fi drivers for various boards witi static credentials.
 
-# Prerequisites for the Pico W
+## Prerequisites for the Pico W
 
 Building for the Raspberry Pi Pico W requires the AIROC binary blobs provided by Infineon. Run the command below to retrieve those files:
 

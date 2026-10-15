@@ -5,7 +5,7 @@ Raspberry Pi Pico W and Pico 2 W. A background thread blinks the
 onboard LED via the CYW43 GPIO driver while the main thread performs
 a WiFi scan.
 
-# Prerequisites for the Pico W
+## Prerequisites for the Pico W
 
 Building for the Raspberry Pi Pico W requires the AIROC binary blobs provided by Infineon. Run the command below to retrieve those files:
 
