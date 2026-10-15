@@ -5,6 +5,14 @@ enabling the Wi-Fi shell module that provides a set of commands:
 scan, connect, and disconnect.  It also enables the net_shell module
 to verify net_if settings.
 
+# Prerequisites for the Pico W
+
+Building for the Raspberry Pi Pico W requires the AIROC binary blobs provided by Infineon. Run the command below to retrieve those files:
+
+```bash
+west blobs fetch hal_infineon
+```
+
 ## Building and Running
 
 Verify the board and chip you are targeting provide Wi-Fi support.
