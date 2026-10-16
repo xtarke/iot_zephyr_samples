@@ -35,6 +35,13 @@ Tip: the first flash command probably will fail. See this BlackMagick Probe [bug
 
 ## Sample console interaction
 
+Open picocom:
+
+```
+picocom -b 115200 /dev/ttyACM1
+```
+
+
 To scan avaliable Wifi Networks:
 
 ```
