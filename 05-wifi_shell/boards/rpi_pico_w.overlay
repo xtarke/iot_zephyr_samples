@@ -1,0 +1,33 @@
+/ {
+    chosen {
+		zephyr,settings-partition = &storage_partition;
+	};
+
+    aliases {
+        led0 = &my_custom_led;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        my_custom_led: led_2 {
+            /* Map to GP2 on the RP2040 (gpio0 is the main GPIO controller) */
+            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+            label = "Custom LED on GP2";
+        };
+    };
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* Allocate 64KB at the end of the 2MB flash for NVS */
+		storage_partition: partition@1f0000 {
+			label = "storage";
+			reg = <0x001f0000 0x00010000>;
+		};
+	};
+};

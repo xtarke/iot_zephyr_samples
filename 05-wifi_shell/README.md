@@ -64,3 +64,42 @@ uart:~$ wifi connect -s "lpae_wifi"  -p "my wifi password" -k 1
 Connected
 Connection requested
 [00:00:49.819,000] <inf> net_dhcpv4: Received: 192.168.0.169
+```
+
+key-mgmt vaues (-k parameter):  
+- 0: None
+- 1: WPA2-PSK
+- 2: WPA2-PSK-256
+- 3: SAE-HNP
+- 4: SAE-H2E
+- 5: SAE-AUTO
+- 6: WAPI
+- 7: EAP-TLS
+- 8: WEP
+- 9: WPA-PSK
+- 10: WPA-Auto-Personal
+- 11: DPP
+- 12: EAP-PEAP-MSCHAPv2
+- 13: EAP-PEAP-GTC
+- 14: EAP-TTLS-MSCHAPv2
+- 15: EAP-PEAP-TLS
+- 20: SAE-EXT-KEY
+
+To add a WiFi credential do flash:
+
+```bash
+wifi cred add -s "<your_network_SSID>" -p "<your_network_password>" -k <key_mgmt>
+```
+
+To list stored credentials:
+
+```bash
+wifi cred list
+```
+
+To enable auto connect:
+
+```bash
+wifi cred auto_connect
+``` 
+
