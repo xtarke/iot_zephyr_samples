@@ -64,8 +64,10 @@ int tagoio_connect(struct tagoio_context *ctx)
 		if (ret == 0) {
 			break;
 		}
-		k_sleep(K_SECONDS(1));
+		k_sleep(K_SECONDS(5));
 	}
+
+	
 
 	if (ret < 0) {
 		LOG_ERR("Could not resolve dns, error: %d", ret);
