@@ -10,6 +10,14 @@ Building for the Raspberry Pi Pico W requires the AIROC binary blobs provided by
 west blobs fetch hal_infineon
 ```
 
+## Prerequisites for the ESP32
+
+Building for the ESP32 requires Espressif HAL requires RF binary blobs. Run the command below to retrieve those files:
+
+```bash
+west blobs fetch hal_espressif
+```
+
 ## Building and Running
 
 Verify the board and chip you are targeting provide Wi-Fi support.
@@ -50,24 +58,31 @@ west espressif monitor -p /dev/ttyACM0
 
 Tip: look into esp32s3 overlay and change "chosen node" if you want to use uart0 for log messages.
 
-
-
 ## Sample console interaction
 
 After boot, we can see the following console output:
 
 ```
 *** Booting Zephyr OS build v4.4.0 ***
-I: RP Pico W static wifi sample.
+I: TagoIO post sample.
 I: Initializing Wi-Fi driver
-I: Received: 192.168.0.169
+I: Connecting to WiFi...
+I: Waiting to connect!
+I: Received: 192.168.0.185
+I: Network connected
+I: Posting data.
+I: Post successful...
+I: Posting data.
+I: Post successful...
+I: Posting data.
+I: Post successful...
 ```
 
 Simetimes the board could connect in firsts attemps:
 
 ```
 *** Booting Zephyr OS build v4.4.0 ***
-I: RP Pico W static wifi sample.
+I: TagoIO post sample.
 I: Initializing Wi-Fi driver
 
 [13706] Function whd_wifi_join failed at line 2179 checkres = 33555438 

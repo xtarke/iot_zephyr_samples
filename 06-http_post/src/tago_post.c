@@ -61,13 +61,12 @@ int tagoio_connect(struct tagoio_context *ctx)
 
 	while (dns_attempts--) {
 		ret = getaddrinfo(TAGOIO_SERVER, port, &hints, &addr);
+				
 		if (ret == 0) {
 			break;
 		}
 		k_sleep(K_SECONDS(5));
 	}
-
-	
 
 	if (ret < 0) {
 		LOG_ERR("Could not resolve dns, error: %d", ret);

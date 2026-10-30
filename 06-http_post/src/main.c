@@ -147,8 +147,6 @@ static int setup_wifi(){
 	net_mgmt_init_event_callback(&mgmt_cb, net_mgmt_event_handler, EVENT_MASK);
 	net_mgmt_add_event_callback(&mgmt_cb);
 
-	
-
 	/* Get the network interface */
 	struct net_if *iface = net_if_get_first_wifi();
 	if (iface == NULL) {
@@ -215,8 +213,7 @@ int main(void)
 	
 	static struct tagoio_context ctx;
 
-	LOG_INF("RP Pico W static wifi sample.");
-
+	LOG_INF("TagoIO post sample.");
 
 	/* Try to connect to Wifi. Ths function does not return
 	 * until a wifi connection is stablished.
@@ -224,10 +221,10 @@ int main(void)
 	setup_wifi();
 
 
-	while (1) {
+	int post = 3;
+	while (post) {
 		k_msleep(1000*10);
 		LOG_INF("Posting data.");
-
 
 		snprintf(ctx.payload, sizeof(ctx.payload),
 		       "{\"variable\": \"temperature\","
@@ -244,8 +241,10 @@ int main(void)
 			continue;
 		}
 
-		temperature += 2;
-		
+		LOG_INF("Post successful...");
+
+		temperature += 2;	
+		post--;
 	}
 
 
