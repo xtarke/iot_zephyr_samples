@@ -6,6 +6,7 @@
  * (like the Raspberry Pi Pico W) to a Wi-Fi network using static credentials
  * defined in the project configuration. It utilizes Zephyr's network
  * management API and synchronization primitives to manage connection state.
+ * After that, the applications sends data to Tago.IO using http post.
  */
 
 /* C includes */

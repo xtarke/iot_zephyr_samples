@@ -1,7 +1,13 @@
-/*
- * Copyright (c) 2020 Gerson Fernando Budke <nandojve@gmail.com>
+/**
+ * @file tago_post.c
+ * @brief HTTP POST implementation for transmitting telemetry data to the TagoIO cloud platform on Zephyr RTOS[cite: 1].
+ * @author Gerson Fernando Budke <nandojve@gmail.com>[cite: 1]
+ * @copyright Copyright (c) 2020 Gerson Fernando Budke[cite: 1]
+ * @license Apache-2.0[cite: 1]
  *
- * SPDX-License-Identifier: Apache-2.0
+ * @details This module manages the network lifecycle for sending JSON payloads to the 
+ *          TagoIO HTTP data endpoint[cite: 1]. It handles DNS resolution with retry mechanisms,
+ *          POSIX socket creation for IPv4/IPv6 configurations, and HTTP POST transmission[cite: 1].
  */
 
 #include <zephyr/logging/log.h>
@@ -21,17 +27,44 @@
 
 #include "tago_post.h"
 
-
 LOG_MODULE_DECLARE(tagoio_http_post, LOG_LEVEL_INF);
 
+/** 
+ * @def CONFIG_TAGOIO_DEVICE_TOKEN
+ * @brief Unique device authorization token assigned by TagoIO for API authentication[cite: 1].
+ */
 #define CONFIG_TAGOIO_DEVICE_TOKEN "99ea1253-734f-4721-8e59-6a199b8ca70d"
 
-
+/** 
+ * @def TAGOIO_SERVER
+ * @brief Fully qualified domain name (FQDN) for the TagoIO API server[cite: 1].
+ */
 #define TAGOIO_SERVER "api.tago.io"
+
+/** 
+ * @def TAGOIO_URL
+ * @brief Target API HTTP endpoint path for posting data payloads[cite: 1].
+ */
 #define TAGOIO_URL          "/data"
+
+/** 
+ * @def HTTP_PORT
+ * @brief Standard HTTP TCP port number string[cite: 1].
+ */
 #define HTTP_PORT           "80"
+
+/** 
+ * @def CONFIG_TAGOIO_HTTP_CONN_TIMEOUT
+ * @brief Timeout duration in seconds for HTTP client request connection[cite: 1].
+ */
 #define CONFIG_TAGOIO_HTTP_CONN_TIMEOUT 10
 
+/**
+ * @brief HTTP header fields required for TagoIO API POST requests[cite: 1].
+ *
+ * Contains authorization token, content type specification, and SSL flag headers[cite: 1].
+ * Terminated by a NULL pointer as expected by the HTTP client library[cite: 1].
+ */
 static const char *tagoio_http_headers[] = {
 	"Device-Token: " CONFIG_TAGOIO_DEVICE_TOKEN "\r\n",
 	"Content-Type: application/json\r\n",
@@ -39,6 +72,20 @@ static const char *tagoio_http_headers[] = {
 	NULL
 };
 
+/**
+ * @brief Resolves TagoIO server IP address and establishes a TCP socket connection[cite: 1].
+ *
+ * Performs DNS resolution for @ref TAGOIO_SERVER with up to 3 retries (5 seconds delay between attempts)[cite: 1].
+ * Automatically configures IPv4 or IPv6 address family based on active network configuration[cite: 1].
+ * Creates a stream socket and connects to the target server[cite: 1].
+ *
+ * @param[in,out] ctx Pointer to the @ref tagoio_context structure. Upon success, the 
+ *                    established socket descriptor is stored in `ctx->sock`[cite: 1].
+ *
+ * @return 0 on success[cite: 1].
+ * @return Negative standard errno code (`-errno`) on socket creation or connection failure[cite: 1].
+ * @return Negative `getaddrinfo` error code on DNS resolution failure[cite: 1].
+ */
 int tagoio_connect(struct tagoio_context *ctx)
 {
 	struct addrinfo *addr;
@@ -105,6 +152,19 @@ int tagoio_connect(struct tagoio_context *ctx)
 	return 0;
 }
 
+/**
+ * @brief Transmits stored JSON payload data via HTTP POST request to TagoIO[cite: 1].
+ *
+ * Prepares the Zephyr HTTP request structure with host info, headers, and payload from `ctx`[cite: 1].
+ * Sends the request over the open socket, invokes the response callback, and closes the socket[cite: 1].
+ *
+ * @param[in,out] ctx Pointer to the @ref tagoio_context containing valid `sock`, `payload`, 
+ *                    and `resp` receive buffer[cite: 1]. Socket is closed and set to `-1` upon return[cite: 1].
+ * @param[in] resp_cb Callback function of type `http_response_cb_t` to handle server HTTP responses[cite: 1].
+ *
+ * @return 0 on successfully sending request and receiving complete response[cite: 1].
+ * @return Negative error code returned by `http_client_req()` on transmission failure[cite: 1].
+ */
 int tagoio_http_push(struct tagoio_context *ctx,
 		     http_response_cb_t resp_cb)
 {
