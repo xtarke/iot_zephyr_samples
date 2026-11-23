@@ -38,6 +38,7 @@ int app_mqtt_subscribe(struct mqtt_client *client);
 /**
  *  @brief  Publish MQTT payload
  */
-int app_mqtt_publish(struct mqtt_client *client);
+//int app_mqtt_publish(struct mqtt_client *client);
+int app_mqtt_publish(struct mqtt_client *client, const char *topic, uint8_t *payload_data);
 
 #endif /* __MQTT_CLIENT_H__ */

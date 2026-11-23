@@ -25,10 +25,31 @@
 #include <zephyr/net/wifi_credentials.h>
 
 /* Http includes */
-#include <zephyr/net/http/client.h>
+//#include <zephyr/net/http/client.h>
+
+#include <zephyr/net/mqtt.h>
 
 /* Local includes */
 //#include "tago_post.h"
+#include "mqtt_client.h"
+
+
+
+
+
+/* MQTT client struct */
+static struct mqtt_client client_ctx;
+
+/* MQTT publish work item */
+struct k_work_delayable mqtt_publish_work;
+
+
+
+
+
+
+
+
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -199,6 +220,28 @@ static int response_cb(struct http_response *rsp,
 
 
 
+/** The system work queue is used to handle periodic MQTT publishing.
+ *  Work queuing begins when the MQTT connection is established.
+ *  Use CONFIG_NET_SAMPLE_MQTT_PUBLISH_INTERVAL to set the publish frequency.
+ */
+
+static void publish_work_handler(struct k_work *work)
+{
+	int rc;
+
+	if (mqtt_connected) {
+		rc = app_mqtt_publish(&client_ctx, CONFIG_NET_SAMPLE_MQTT_PUB_TOPIC, "Hello!");
+		if (rc != 0) {
+			LOG_INF("MQTT Publish failed [%d]", rc);
+		}
+		k_work_reschedule(&mqtt_publish_work,
+					K_SECONDS(CONFIG_NET_SAMPLE_MQTT_PUBLISH_INTERVAL));
+	} else {
+		k_work_cancel_delayable(&mqtt_publish_work);
+	}
+}
+
+
 /**
  * @brief Main application entry point.
  *
@@ -209,9 +252,10 @@ static int response_cb(struct http_response *rsp,
  */
 int main(void)
 {
+	int rc;
 	int temperature = 0;
 	
-	LOG_INF("TagoIO post sample.");
+	LOG_INF("MQTT sample.");
 
 	/* Try to connect to Wifi. Ths function does not return
 	 * until a wifi connection is stablished.
@@ -219,14 +263,29 @@ int main(void)
 	setup_wifi();
 
 
+
+	rc = app_mqtt_init(&client_ctx);
+	if (rc != 0) {
+		LOG_ERR("MQTT Init failed [%d]", rc);
+		return rc;
+	}
+
+	k_work_init_delayable(&mqtt_publish_work, publish_work_handler);
+
 	int post = 3;
 	while (post) {
-		k_msleep(1000*5);
+		/* Block until MQTT connection is up */
+		app_mqtt_connect(&client_ctx);
 		
 
+		/* We are now connected, begin queueing periodic MQTT publishes */
+		k_work_reschedule(&mqtt_publish_work,
+					K_SECONDS(CONFIG_NET_SAMPLE_MQTT_PUBLISH_INTERVAL));
 
 
 
+		/* Handle MQTT inputs and connection */
+		app_mqtt_run(&client_ctx);
 
 		temperature += 2;	
 		post--;

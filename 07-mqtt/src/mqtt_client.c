@@ -311,27 +311,31 @@ static int get_mqtt_payload(struct mqtt_binstr *payload)
 	return rc;
 }
 
-int app_mqtt_publish(struct mqtt_client *client)
+int app_mqtt_publish(struct mqtt_client *client,
+					const char *topic, uint8_t *payload_data)
 {
 	int rc;
 	struct mqtt_publish_param param;
 	struct mqtt_binstr payload;
 	static uint16_t msg_id = 1;
-	struct mqtt_topic topic = {
+	struct mqtt_topic fmt_topic = {
 		.topic = {
-			.utf8 = CONFIG_NET_SAMPLE_MQTT_PUB_TOPIC,
-			.size = strlen(topic.topic.utf8)
+			.utf8 = topic,
+			.size = strlen(topic)
 		},
 		.qos = IS_ENABLED(CONFIG_NET_SAMPLE_MQTT_QOS_0_AT_MOST_ONCE) ? 0 :
 			(IS_ENABLED(CONFIG_NET_SAMPLE_MQTT_QOS_1_AT_LEAST_ONCE) ? 1 : 2)
 	};
 
-	rc = get_mqtt_payload(&payload);
-	if (rc != 0) {
-		LOG_ERR("Failed to get MQTT payload [%d]", rc);
-	}
+	payload.data = payload_data;
+	payload.len = strlen(payload_data);
 
-	param.message.topic = topic;
+	// rc = get_mqtt_payload(&payload);
+	// if (rc != 0) {
+	// 	LOG_ERR("Failed to get MQTT payload [%d]", rc);
+	// }
+
+	param.message.topic = fmt_topic;
 	param.message.payload = payload;
 	param.message_id = msg_id++;
 	param.dup_flag = 0;
@@ -342,7 +346,8 @@ int app_mqtt_publish(struct mqtt_client *client)
 		LOG_ERR("MQTT Publish failed [%d]", rc);
 	}
 
-	LOG_INF("Published to topic '%s', QoS %d",
+	LOG_INF("Published %s to topic '%s', QoS %d",
+			payload.data,
 			param.message.topic.topic.utf8,
 			param.message.topic.qos);
 

@@ -11,22 +11,22 @@ config NET_SAMPLE_MQTT_BROKER_HOSTNAME
 
 config NET_SAMPLE_MQTT_BROKER_PORT
 	string "MQTT Broker Connection Port"
-	default "8883"
+	default "1883"
 	help
 	  Port through which the application should connect to the MQTT broker.
 	  Secure MQTT uses port 8883.
 
 config NET_SAMPLE_MQTT_PUB_TOPIC
 	string "The MQTT topic the application should publish data to"
-	default "zephyr_sample/sensor"
+	default "zephyr_juca_sample/sensor"
 
 config NET_SAMPLE_MQTT_SUB_TOPIC_CMD
 	string "The MQTT topic the application will receive commands on"
-	default "zephyr_sample/command"
+	default "zephyr_juca_sample/command"
 
 config NET_SAMPLE_MQTT_PUBLISH_INTERVAL
 	int "Interval between MQTT publishes (in seconds)"
-	default 3
+	default 10
 	help
 	  This config determines the frequency at which MQTT publishes occur.
 
