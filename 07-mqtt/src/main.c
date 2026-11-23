@@ -30,10 +30,7 @@
 #include <zephyr/net/mqtt.h>
 
 /* Local includes */
-//#include "tago_post.h"
 #include "mqtt_client.h"
-
-
 
 
 
@@ -42,11 +39,6 @@ static struct mqtt_client client_ctx;
 
 /* MQTT publish work item */
 struct k_work_delayable mqtt_publish_work;
-
-
-
-
-
 
 
 
@@ -202,24 +194,6 @@ static int setup_wifi(){
 	return 0;
 }
 
-
-static int response_cb(struct http_response *rsp,
-		       enum http_final_call final_data,
-		       void *user_data)
-{
-	if (final_data == HTTP_DATA_MORE) {
-		LOG_DBG("Partial data received (%zd bytes)", rsp->data_len);
-	} else if (final_data == HTTP_DATA_FINAL) {
-		LOG_DBG("All the data received (%zd bytes)", rsp->data_len);
-	}
-
-	LOG_DBG("Response status %s", rsp->http_status);
-
-	return 0;
-}
-
-
-
 /** The system work queue is used to handle periodic MQTT publishing.
  *  Work queuing begins when the MQTT connection is established.
  *  Use CONFIG_NET_SAMPLE_MQTT_PUBLISH_INTERVAL to set the publish frequency.
@@ -239,6 +213,14 @@ static void publish_work_handler(struct k_work *work)
 	} else {
 		k_work_cancel_delayable(&mqtt_publish_work);
 	}
+}
+
+
+void mqtt_event(const char *topic, uint8_t *payload_data) {
+    
+	LOG_INF("On MQTT msg callback!");
+	LOG_INF("Topic: %s.", topic);
+	LOG_INF("Paylod: %s.", payload_data);
 }
 
 
@@ -262,8 +244,6 @@ int main(void)
 	*/
 	setup_wifi();
 
-
-
 	rc = app_mqtt_init(&client_ctx);
 	if (rc != 0) {
 		LOG_ERR("MQTT Init failed [%d]", rc);
@@ -271,6 +251,9 @@ int main(void)
 	}
 
 	k_work_init_delayable(&mqtt_publish_work, publish_work_handler);
+
+
+	register_MQTT_sub_callback(mqtt_event);
 
 	int post = 3;
 	while (post) {

@@ -1,6 +1,8 @@
 /*
  * Copyright (c) 2024 Analog Devices, Inc.
  *
+ * Modified by Renan Augusto Starke, 2026.
+ *
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -40,5 +42,11 @@ int app_mqtt_subscribe(struct mqtt_client *client);
  */
 //int app_mqtt_publish(struct mqtt_client *client);
 int app_mqtt_publish(struct mqtt_client *client, const char *topic, uint8_t *payload_data);
+
+
+typedef void (*MQTT_msg_received_callback)(const char *topic, uint8_t *payload_data);
+
+void register_MQTT_sub_callback(MQTT_msg_received_callback cb);
+
 
 #endif /* __MQTT_CLIENT_H__ */

@@ -1,6 +1,8 @@
 /*
  * Copyright (c) 2024 Analog Devices, Inc.
  *
+ * Modified by Renan Augusto Starke, 2026.
+ *
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -28,15 +30,13 @@ static uint8_t payload_buf[CONFIG_NET_SAMPLE_MQTT_PAYLOAD_SIZE];
 /* MQTT broker details */
 static struct sockaddr_storage broker;
 
+
+static MQTT_msg_received_callback on_msg_callback = NULL;
+
+
 /* Socket descriptor */
 static struct pollfd fds[1];
 static int nfds;
-
-/* JSON payload format */
-// static const struct json_obj_descr sensor_sample_descr[] = {
-// 	JSON_OBJ_DESCR_PRIM(struct sensor_sample, unit, JSON_TOK_STRING),
-// 	JSON_OBJ_DESCR_PRIM(struct sensor_sample, value, JSON_TOK_NUMBER),
-// };
 
 /* MQTT connectivity status flag */
 bool mqtt_connected;
@@ -101,12 +101,8 @@ static inline void on_mqtt_connect(void)
 {
 	mqtt_connected = true;
 	
-	
-	
+	/* Turn on led if necessary */
 	//device_write_led(LED_NET, LED_ON);
-
-
-
 
 	LOG_INF("Connected to MQTT broker!");
 	LOG_INF("Hostname: %s", CONFIG_NET_SAMPLE_MQTT_BROKER_HOSTNAME);
@@ -121,10 +117,9 @@ static inline void on_mqtt_disconnect(void)
 	mqtt_connected = false;
 	clear_fds();
 	
-	
-	
+
+	/* Turn off LED if necessary */
 	//device_write_led(LED_NET, LED_OFF);
-	
 	
 	
 	LOG_INF("Disconnected from MQTT broker");
@@ -157,11 +152,11 @@ static void on_mqtt_publish(struct mqtt_client *const client, const struct mqtt_
 	if (strcmp(evt->param.publish.message.topic.topic.utf8,
 			CONFIG_NET_SAMPLE_MQTT_SUB_TOPIC_CMD) == 0) {
 		
+			if (on_msg_callback != NULL)
+				on_msg_callback(evt->param.publish.message.topic.topic.utf8, payload);
+			else
+				LOG_INF("MQTT subscribe callback not registered.");
 		
-			//device_command_handler(payload);
-
-
-
 	}
 }
 
@@ -283,34 +278,6 @@ static int poll_mqtt_socket(struct mqtt_client *client, int timeout)
 	return rc;
 }
 
-/** Retrieves a sensor sample and encodes it in JSON format */
-static int get_mqtt_payload(struct mqtt_binstr *payload)
-{
-	int rc = -1;
-	//_sample sample;
-
-	//rc = device_read_sensor(&sample);
-
-
-
-	if (rc != 0) {
-		LOG_ERR("Failed to get sensor sample [%d]", rc);
-		return rc;
-	}
-
-	//rc = json_obj_encode_buf(sensor_sample_descr, ARRAY_SIZE(sensor_sample_descr),
-	//				&sample, payload_buf, CONFIG_NET_SAMPLE_MQTT_PAYLOAD_SIZE);
-	if (rc != 0) {
-		LOG_ERR("Failed to encode JSON object [%d]", rc);
-		return rc;
-	}
-
-	payload->data = payload_buf;
-	payload->len = strlen(payload->data);
-
-	return rc;
-}
-
 int app_mqtt_publish(struct mqtt_client *client,
 					const char *topic, uint8_t *payload_data)
 {
@@ -329,11 +296,6 @@ int app_mqtt_publish(struct mqtt_client *client,
 
 	payload.data = payload_data;
 	payload.len = strlen(payload_data);
-
-	// rc = get_mqtt_payload(&payload);
-	// if (rc != 0) {
-	// 	LOG_ERR("Failed to get MQTT payload [%d]", rc);
-	// }
 
 	param.message.topic = fmt_topic;
 	param.message.payload = payload;
@@ -381,6 +343,11 @@ int app_mqtt_subscribe(struct mqtt_client *client)
 	}
 
 	return rc;
+}
+
+
+void register_MQTT_sub_callback(MQTT_msg_received_callback cb) {
+    on_msg_callback = cb;
 }
 
 /** Process incoming MQTT data and keep the connection alive*/
