@@ -19,7 +19,7 @@ This repository contains a collection of IoT examples and utilities built with [
 | **06-http_post** | This application demonstrates how to connect a board to a Wi-Fi network using static credentials in **Zephyr RTOS** and periodically transmit sensor telemetry to the **Tago.IO** cloud platform via HTTP POST requests.
 | **07-mqtt** | This application demonstrates how to establish a Wi-Fi connection and communicate with an MQTT broker using the **Zephyr RTOS** networking stack. |
 | **_debugger** | Documentation and configuration files for debugging the RP2040. Includes a comprehensive guide for using the **Black Magic Probe**. |
-| **__toolbox**
+| **__toolbox** | Zephyr development environment setup using toolboxes |
 
 ---
 
