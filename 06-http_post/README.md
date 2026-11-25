@@ -1,6 +1,6 @@
 # Overview
 
-This sample allows testing Wi-Fi drivers for various boards witi static credentials.
+This application demonstrates how to connect an embedded board (such as the **Raspberry Pi Pico W**) to a Wi-Fi network using static credentials in **Zephyr RTOS** and periodically transmit sensor telemetry (simulated temperature readings) to the **Tago.IO** cloud platform via HTTP POST requests.
 
 ## Prerequisites for the Pico W
 
@@ -96,3 +96,7 @@ E: Connecting to Wi-Fi failed, err: -11
 E: New try in 5s.
 I: Received: 192.168.0.169
 ```
+
+## Tago.io data dashboard
+
+![Tago.io data](./tago_io.png)
