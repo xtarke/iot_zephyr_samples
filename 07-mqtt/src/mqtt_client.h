@@ -1,9 +1,10 @@
-/*
- * Copyright (c) 2024 Analog Devices, Inc.
+/**
+ * @file mqtt_client.h
+ * @brief MQTT client interface for initializing, connecting, subscribing, and publishing.
  *
- * Modified by Renan Augusto Starke, 2026.
- *
- * SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (c) 2024 Analog Devices, Inc.
+ * @author Modified by Renan Augusto Starke, 2026.
+ * @license SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef __MQTT_CLIENT_H__
@@ -13,7 +14,13 @@
 #define MSECS_NET_POLL_TIMEOUT	5000
 #define MSECS_WAIT_RECONNECT	1000
 
-/** MQTT connection status flag */
+
+/**
+ * @brief Global MQTT connection status flag.
+ *
+ * Indicates whether the client is currently connected to the MQTT broker (`true`)
+ * or disconnected (`false`).
+ */
 extern bool mqtt_connected;
 
 /**
@@ -38,14 +45,33 @@ void app_mqtt_run(struct mqtt_client *client);
 int app_mqtt_subscribe(struct mqtt_client *client);
 
 /**
- *  @brief  Publish MQTT payload
+ * @brief Publish an MQTT payload to a specified topic.
+ *
+ * @param[in,out] client       Pointer to a connected @c mqtt_client instance.
+ * @param[in]     topic        Null-terminated string specifying the target MQTT topic.
+ * @param[in]     payload_data Pointer to the data buffer to be published.
+ *
+ * @return 0 on success, or a negative error code on failure.
  */
-//int app_mqtt_publish(struct mqtt_client *client);
 int app_mqtt_publish(struct mqtt_client *client, const char *topic, uint8_t *payload_data);
 
-
+/**
+ * @brief Callback function pointer type for received MQTT messages.
+ *
+ * @param[in] topic        Null-terminated string containing the topic name on which
+ *                         the message was received.
+ * @param[in] payload_data Pointer to the received message payload buffer.
+ */
 typedef void (*MQTT_msg_received_callback)(const char *topic, uint8_t *payload_data);
 
+/**
+ * @brief Register a callback function for incoming MQTT messages.
+ *
+ * Sets the user-defined handler that will be invoked whenever a message is received
+ * on a subscribed topic.
+ *
+ * @param[in] cb Function pointer matching the @ref MQTT_msg_received_callback signature.
+ */
 void register_MQTT_sub_callback(MQTT_msg_received_callback cb);
 
 

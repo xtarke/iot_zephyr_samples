@@ -1,4 +1,5 @@
 # Copyright (c) 2024 Analog Devices, Inc.
+# Modified by Renan Augusto Starke
 # SPDX-License-Identifier: Apache-2.0
 
 mainmenu "Secure MQTT Sensor Actuator Sample Application"
